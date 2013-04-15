@@ -1,0 +1,4 @@
+>match_19769_path_0 length:69 type:RR pre_length:35 mid_length:31 post_length:3 c0_average_coverage:25.97 c1_average_coverage:12.48 average_coverage:41.36 min_coverage:35 max_coverage:89 fst_coverage:89 fst_kmer:ATCAGTGTGTGCGTTTGGCCCGATTTGAGAA fst_r:G fst_f:CT lst_coverage:83 lst_kmer:AAGCCCCATCAGGAGGTATGAATGATATAGT lst_r:T lst_f:AT
+ATCAGTGTGTGCGTTTGGCCCGATTTGAGAACGATcgaactatatcattcatacctcctgatggggCTT
+>match_19769_path_1 length:69 type:RR pre_length:35 mid_length:31 post_length:3 c0_average_coverage:2.00 c1_average_coverage:0.00 average_coverage:12.38 min_coverage:2 max_coverage:89 fst_coverage:89 fst_kmer:ATCAGTGTGTGCGTTTGGCCCGATTTGAGAA fst_r:G fst_f:CT lst_coverage:83 lst_kmer:AAGCCCCATCAGGAGGTATGAATGATATAGT lst_r:T lst_f:AT
+ATCAGTGTGTGCGTTTGGCCCGATTTGAGAACGATtgaactatatcattcatacctcctgatggggCTT
