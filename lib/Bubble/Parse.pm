@@ -7,7 +7,7 @@ use FileHandle;
 use Tie::Handle::CSV;
 use Data::Dumper;
 use Bubble::Bubble;
-use Bubble::Runner;
+use Bubble::Blower;
 use Bio::Seq;
 use Carp;
 
@@ -48,7 +48,8 @@ Create a new file object representing the Bubbleparse output
 
 	my $bp = Bubble::Parse->new(
 			-csv => "somefile.csv",
-			-fasta => "somefile.fasta"
+			-fasta => "somefile.fasta",
+			-coverages => "somefile.cov"
 			
 	);
 
@@ -76,29 +77,36 @@ sub new {
 	#now do the fasta file
 	$$self{_fastafile} = $arg{-fasta};
 	
+	#now do the fasta file
+	$$self{_coveragefile} = $arg{-coverages};
+	
 	##a hash of positions of the sequence header in the fasta files ..
-	$self->_get_match_file_positions;
+	($$self{_match_file_index}, $$self{_fasta_fh}) = $self->_get_file_positions($$self{_fastafile});
+
+	##a hash of positions of the sequence header in the coverage files ..
+	($$self{_coverage_file_index}, $$self{_coverage_fh}) = $self->_get_file_positions($$self{_coveragefile});
 	return $self;
 }
 
-#get the position in bytes of each fasta entry and make an index
-sub _get_match_file_positions{
+#get the position in bytes of each fasta entry (for coverage and match files) and make an index
+sub _get_file_positions{
 	
-	my $self = shift;
+	my ($self,$file) = @_;
 	my $info = {};
-	my $fasta = FileHandle->new( "$$self{_fastafile}", "r") || croak "could not open FASTA file $$self{_fastafile}";
-	while (my $line = $fasta->getline){
+	my $fileh = FileHandle->new( $file, "r") || croak "could not open file $file";
+	while (my $line = $fileh->getline){
 		if ($line =~ m/^>/){
 			my $string_length = _length_in_bytes($line);
 			$line =~ m/^>match_(\d+)_path_(\d+)/;
 			my ($match_num,$match_path) = ($1,$2);
-			my $pos = tell($fasta) - $string_length;
+			my $pos = tell($fileh) - $string_length;
 			$$info{$match_num}{$match_path} = $pos; 
 		}
 	}
-	$$self{_match_file_index} = $info;
+	return ($info, $fileh);
+	#$$self{_match_file_index} = $info;
 	warn Dumper $info;
-	$$self{_fasta_fh} = $fasta;
+	#$$self{_fasta_fh} = $file;
 }
 
 #returns a hash of attributes for the match sought including sequence
@@ -134,6 +142,28 @@ sub _seek_sequence{
 	
 	
 	return ($seqs, $headers);
+}
+
+#returns array of coverages for match sought
+sub _seek_coverages{
+
+	my ($self,$match_num) = @_;
+	my $covs = {};
+	foreach my $path (keys %{$$self{_coverage_file_index}{$match_num}}){
+		my $pos = $$self{_coverage_file_index}{$match_num}{$path};
+		seek($$self{_coverage_fh},$pos,0);
+		my $header = $$self{_coverage_fh}->getline;
+
+		my @lines;
+		while(my $line = $$self{_coverage_fh}->getline){
+			last if $line =~ m/^>/;
+			chomp $line;
+			my @vals = split(/\s/,$line);
+			push @lines, @vals;
+		}
+		$$covs{$path} = \@lines;
+	}
+	return $covs;
 }
 
 
@@ -188,6 +218,7 @@ sub next{
 	my $match = $csv_obj->{'match'};
 	
 	my ($seq_obj_hash, $headers_hash) = $self->_seek_sequence($match);
+	my $covs = $self->_seek_coverages($match);
 	
 	#work out the names of the attrs in the fasta header
 	#and how many paths
@@ -208,7 +239,8 @@ sub next{
 		-csv_headers => $self->headerarr,
 		-seq_header_info => $headers_hash, #will be hashref of info from fasta headers, (one set for each path)
 		-seq_headers => \@seq_headers, #arrayref of header info in fasta file
-		-paths => \@paths
+		-paths => \@paths,
+		-coverages => $covs
 	);
 }
 

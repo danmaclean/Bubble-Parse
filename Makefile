@@ -165,7 +165,8 @@ C_FILES  =
 O_FILES  = 
 H_FILES  = 
 MAN1PODS = 
-MAN3PODS = lib/Bubble/Bubble.pm \
+MAN3PODS = lib/Bubble/Blower.pm \
+	lib/Bubble/Bubble.pm \
 	lib/Bubble/Parse.pm
 
 # Where is the Config information that we are using/depend on
@@ -188,13 +189,28 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/Bubble/Bubble.pm \
-	lib/Bubble/Parse.pm
+TO_INST_PM = lib/Bubble.html \
+	lib/Bubble/Blower.pm \
+	lib/Bubble/Bubble.pm \
+	lib/Bubble/Parse.pm \
+	lib/Parse.html \
+	lib/pod2htmd.tmp \
+	lib/pod2htmi.tmp
 
 PM_TO_BLIB = lib/Bubble/Bubble.pm \
 	blib/lib/Bubble/Bubble.pm \
 	lib/Bubble/Parse.pm \
-	blib/lib/Bubble/Parse.pm
+	blib/lib/Bubble/Parse.pm \
+	lib/Bubble/Blower.pm \
+	blib/lib/Bubble/Blower.pm \
+	lib/pod2htmi.tmp \
+	blib/lib/pod2htmi.tmp \
+	lib/pod2htmd.tmp \
+	blib/lib/pod2htmd.tmp \
+	lib/Parse.html \
+	blib/lib/Parse.html \
+	lib/Bubble.html \
+	blib/lib/Bubble.html
 
 
 # --- MakeMaker platform_constants section:
@@ -417,10 +433,12 @@ POD2MAN = $(POD2MAN_EXE)
 
 manifypods : pure_all  \
 	lib/Bubble/Bubble.pm \
-	lib/Bubble/Parse.pm
+	lib/Bubble/Parse.pm \
+	lib/Bubble/Blower.pm
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
 	  lib/Bubble/Bubble.pm $(INST_MAN3DIR)/Bubble::Bubble.$(MAN3EXT) \
-	  lib/Bubble/Parse.pm $(INST_MAN3DIR)/Bubble::Parse.$(MAN3EXT) 
+	  lib/Bubble/Parse.pm $(INST_MAN3DIR)/Bubble::Parse.$(MAN3EXT) \
+	  lib/Bubble/Blower.pm $(INST_MAN3DIR)/Bubble::Blower.$(MAN3EXT) 
 
 
 
@@ -812,7 +830,12 @@ ppd :
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  lib/Bubble/Bubble.pm blib/lib/Bubble/Bubble.pm \
-	  lib/Bubble/Parse.pm blib/lib/Bubble/Parse.pm 
+	  lib/Bubble/Parse.pm blib/lib/Bubble/Parse.pm \
+	  lib/Bubble/Blower.pm blib/lib/Bubble/Blower.pm \
+	  lib/pod2htmi.tmp blib/lib/pod2htmi.tmp \
+	  lib/pod2htmd.tmp blib/lib/pod2htmd.tmp \
+	  lib/Parse.html blib/lib/Parse.html \
+	  lib/Bubble.html blib/lib/Bubble.html 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

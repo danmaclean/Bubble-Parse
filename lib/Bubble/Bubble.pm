@@ -45,7 +45,8 @@ Create a new object representing the Bubble::Bubble output. usually called from 
 			-csv_headers => \@csv_headers #array ref of the headers in the csv file
 			-seq_headers => $headers_hash #array ref of headers info in the fasta file
 			-seq_header_info => #hashref for hash of path numbers and header info from fasta gule
-			-paths => \@paths #array ref of paths through the bubble
+			-paths => \@paths #array ref of path names through the bubble
+			-coverages => $coverages_hash #hashref for hash of path numbers and arrays of coverages eg (1 => \@(1,2,3) )
 	);
 
 =cut
@@ -61,6 +62,7 @@ sub new {
 	$$self{_seq_headers} = $args{-seq_headers};
 	$$self{_seq_header_info} = $args{-seq_header_info};
 	$$self{_paths} = $args{-paths};
+	$$self{_coverages} = $args{-coverages};
 	warn Dumper $self;
 	return $self;
 }
@@ -154,6 +156,20 @@ returns Bio::Seq object of path sequence
 sub seq{
 	my ($self,$path) = @_;	
 	return $$self{_seq_obj}{$path};
+}
+
+=head2 coverage
+
+returns array ref of coverages for a path
+
+	$b->coverage('1') #returns arrayref of coverages for path 1
+	$b->coverage('1')->[0] #returns scalar of coverage for path 1 at first position 
+
+=cut
+
+sub coverage{
+	my ($self,$path) = @_;	
+	return $$self{_coverages}{$path};
 }
 
 =head1 AUTHOR

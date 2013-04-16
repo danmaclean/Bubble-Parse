@@ -19,7 +19,8 @@ BEGIN {
 	#check new object creates
 	my $new_obj = Bubble::Parse->new(
 				-csv => "$samples_dir/basic.csv",
-				-fasta => "$samples_dir/basic.fa"
+				-fasta => "$samples_dir/basic.fa",
+				-coverages => "$samples_dir/basic.cov"
 	);
 	isa_ok $new_obj, "Bubble::Parse", "can't create object";
 	
@@ -41,6 +42,10 @@ BEGIN {
 	warn Dumper $line->seq("1"); #gets sequence of given path;
 	
 	warn $line->seq("1")->seq; #eg print the sequence!!
+	
+	warn Dumper $line->coverage("1"); #print the coverage array
+	
+	warn Dumper $line->coverage("1")->[3]; #print a single value
 	
 diag( "Testing Bubble::Parse $Bubble::Parse::VERSION, Perl $], $^X" );
 
