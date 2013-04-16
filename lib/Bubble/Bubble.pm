@@ -89,7 +89,7 @@ EG from the csv file
 	$b->get('rank')  #returns value for the bubbles'Rank' from the csv file for this bubble,
 	$b->get('Rank')  #is case insensitive 
 
-EG from the Fasta file
+EG from the Fasta file, for this data you need to specify the path you want
 
 	$b->get('fst_coverage', 1) #gets the value of fst_coverage for path 1
 	
