@@ -39,11 +39,13 @@ if you don't export anything, such as for a purely object-oriented module.
 
 Create a new object representing the Bubble::Bubble output. usually called from Bubble::Parse->next
 
-	my $bp = Bubble::Bubble->new(
-			-csv_obj => Tie::Handle::CSV line object
-			-seq_obj => Bio::Seq object
-			-csv_headers => array ref of headers in the csv file
-			-seq_headers => array ref of info in the fasta file header
+	my $b = Bubble::Bubble->new(
+			-csv_obj => $csv #Tie::Handle::CSV line object
+			-seq_obj => $seq_obj_hash #Hashref for hash of path numbers and Bio::Seq objects e.g  (1 => Bio::Seq object)
+			-csv_headers => \@csv_headers #array ref of the headers in the csv file
+			-seq_headers => $headers_hash #array ref of headers info in the fasta file
+			-seq_header_info => #hashref for hash of path numbers and header info from fasta gule
+			-paths => \@paths #array ref of paths through the bubble
 	);
 
 =cut
@@ -65,7 +67,9 @@ sub new {
 
 =head2 paths
 
-	returns an array ref of the path names in this bubble
+returns an array ref of the path names in this bubble
+
+	$b->paths # (1,2);
 	
 =cut
 
@@ -76,7 +80,52 @@ sub paths{
 
 =head2 get
 
-	get returns attributes for the bubble, from the data portion in the csv  or the sequence portion in the fasta file
+get returns attributes for the bubble from the data portion in the csv or the sequence portion in the fasta file
+
+EG from the csv file
+
+	$b->get('rank')  #returns value for the bubbles'Rank' from the csv file for this bubble,
+	$b->get('Rank')  #is case insensitive 
+
+EG from the Fasta file
+
+	$b->get('fst_coverage', 1) #gets the value of fst_coverage for path 1
+	
+	
+Here is the info from the Bubbleparse manual for the information in the header of the fasta files
+
+length - the length of the sequence, in nucleotides.
+ type - the type of bubble discovered. This consists of two characters, the first representing the start node, the second the end node. An R indicates a reverse branch Y node, an F a forward branch Y node and an X indicates an X node.
+ pre length - the length of the flanking before the bubble path sequence.
+ mid length - the length of the path through the bubble.
+ post length - the length of the flanking after the bubble path sequence.
+ cX average coverage - the mean coverage for colour X of path through bubble (ie. not including flanking).
+ average coverage - the mean coverage of the whole sequence (including flanking).
+ min coverage - the lowest coverage of any node in the sequence.
+ max coverage - the highest coverage of any node in the sequence.
+ fst f - valid edges in the de Bruijn graph in the forward orientation for the first kmer of the path that generated the sequence.
+ fst r - valid edges in the de Bruijn graph in the reverse orientation for the first kmer of the path that generated the sequence.
+ fst kmer - the first kmer in the sequence.
+ lst f - valid edges in the de Bruijn graph in the forward orientation for the last kmer of the path that generated the sequence.
+ lst r - valid edges in the de Bruijn graph in the reverse orientation for the last kmer of the path that generated the sequence.
+ lst kmer - the last kmer in the sequence
+
+Here is the info from the Bubbleparse manual for the information for in the CSV file
+
+ Rank - gives the rank within this type, with 1 the highest rank.
+ Match - gives the match number, which can be cross referenced with the Cortex output files.
+ Num Pth - indicates the number of paths through the bubble.
+ Type - the type of the bubble, according to the classification given in Section 2.2.
+ Lngst Cntig - gives the length of the longest contig associated with the bubble - that is, the length of the longest path through the bubble, plus flanking. For SNPs, paths through the bubble will all have the same length, but for indels, path lengths are likely to be different.
+ Path Len - gives the length of the first two (or three, if present) paths through the bubble. This length does not include flanking.
+ Flags - shows the status of a number of flags associated with the entry. Most of these can be ignored, but look out for an R which indicates the match is a reverse compliment repeat. These will appear at the bottom of tables.
+ c0 Coverage - provides the mean coverage in colour 0 along the first (P0) and second (P1) paths through the bubble.
+ c1 Coverage - provides the mean coverage in colour 1 along the first (P0) and second (P1) paths through the bubble.
+ c0 Coverage % - provides the colour 0 percentage coverage along the first (P0) and second (P1) paths through the bubble. The sum of colour 0 percentages along all paths will add up to 100.
+ c1 Coverage % - provides the colour 1 percentage coverage along the first (P0) and second (P1) paths through the bubble. The sum of colour 0 percentages along all paths will add up to 100.
+ Difference - provides a measure of how much the coverage percentage differs from the expected coverage ratio.
+	
+NOTE: some attributes are in both the CSV and in the fasta file under different names, so can be retrieved separately if desired.
 
 =cut
 
@@ -96,6 +145,9 @@ sub get {
 =head2 seq
 
 returns Bio::Seq object of path sequence
+
+	$b->seq('1') #returns Bio::Seq object of path 1
+	$b->seq('1')->seq returns sequence string of path 1
 
 =cut
 
