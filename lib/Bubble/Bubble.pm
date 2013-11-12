@@ -63,7 +63,6 @@ sub new {
 	$$self{_seq_header_info} = $args{-seq_header_info};
 	$$self{_paths} = $args{-paths};
 	$$self{_coverages} = $args{-coverages};
-	warn Dumper $self;
 	return $self;
 }
 
