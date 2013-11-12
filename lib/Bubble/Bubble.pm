@@ -171,6 +171,19 @@ sub coverage{
 	return $$self{_coverages}{$path};
 }
 
+=head2 variant_identity
+
+returns nucleotide identity of variant for path
+
+	$b->variant_identity('1');  #=> 't'
+	
+=cut
+
+sub variant_identity{
+	my ($self,$path) = @_;
+	return substr($self->seq($path)->seq, $self->get('pre_length', $path), 1);
+}
+
 =head1 AUTHOR
 
 Dan MacLean, C<< <maclean.daniel at gmail.com> >>
