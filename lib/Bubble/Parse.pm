@@ -214,6 +214,7 @@ sub next{
 	my $self = shift;
 	my $fh = $$self{_csvfh};
 	my $csv_obj = <$fh>;
+	warn Dumper $csv_obj;
 	my $match = $csv_obj->{'match'};
 	warn $csv_obj->{'match'}, "\n";
 	
