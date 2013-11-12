@@ -111,6 +111,7 @@ sub _get_file_positions{
 #returns a hash of attributes for the match sought including sequence
 sub _seek_sequence{
 	my ($self,$match_num) = @_;
+	warn Dumper @_;
 	my $seqs =  {};
 	my $headers = {};
 		
