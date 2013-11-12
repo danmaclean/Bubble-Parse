@@ -7,7 +7,6 @@ use FileHandle;
 use Tie::Handle::CSV;
 use Data::Dumper;
 use Bubble::Bubble;
-use Bubble::Blower;
 use Bio::Seq;
 use Carp;
 
@@ -67,7 +66,7 @@ sub new {
 		open_mode => '<'
 		) || die "couldn't open file $$self{_csvfile}\n\n";
 	$$self{_csvfh} = $csv_fh; #actual file handle
-	$$self{_matchfile} = $arg{'-matchfile'};
+	$$self{_matchfile} = $arg{-coverages};
 	
 	$$self{_header} = $$self{_csvfh}->header;
 	my @headerarr = split(/,/,$$self{_csvfh}->header);
@@ -105,13 +104,14 @@ sub _get_file_positions{
 	}
 	return ($info, $fileh);
 	#$$self{_match_file_index} = $info;
-	warn Dumper $info;
+	#warn Dumper $info;
 	#$$self{_fasta_fh} = $file;
 }
 
 #returns a hash of attributes for the match sought including sequence
 sub _seek_sequence{
 	my ($self,$match_num) = @_;
+	warn Dumper @_;
 	my $seqs =  {};
 	my $headers = {};
 		
@@ -135,8 +135,8 @@ sub _seek_sequence{
 			chomp $line;
 			$seq .= $line;
 		}
-		warn $seq;
-		warn $name;
+		#warn $seq;
+		#warn $name;
 		$$seqs{$path} = Bio::Seq->new(-seq => $seq, -id => $name);
 	}
 	
