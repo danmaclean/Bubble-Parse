@@ -66,7 +66,7 @@ sub new {
 		open_mode => '<'
 		) || die "couldn't open file $$self{_csvfile}\n\n";
 	$$self{_csvfh} = $csv_fh; #actual file handle
-	$$self{_matchfile} = $arg{'-matchfile'};
+	$$self{_matchfile} = $arg{'-coverages'};
 	
 	$$self{_header} = $$self{_csvfh}->header;
 	my @headerarr = split(/,/,$$self{_csvfh}->header);
