@@ -104,7 +104,7 @@ sub _get_file_positions{
 	}
 	return ($info, $fileh);
 	#$$self{_match_file_index} = $info;
-	warn Dumper $info;
+	#warn Dumper $info;
 	#$$self{_fasta_fh} = $file;
 }
 
@@ -134,8 +134,8 @@ sub _seek_sequence{
 			chomp $line;
 			$seq .= $line;
 		}
-		warn $seq;
-		warn $name;
+		#warn $seq;
+		#warn $name;
 		$$seqs{$path} = Bio::Seq->new(-seq => $seq, -id => $name);
 	}
 	
