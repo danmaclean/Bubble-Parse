@@ -215,6 +215,7 @@ sub next{
 	my $fh = $$self{_csvfh};
 	my $csv_obj = <$fh>;
 	my $match = $csv_obj->{'match'};
+	warn $csv_obj->{'match'}, "\n";
 	
 	my ($seq_obj_hash, $headers_hash) = $self->_seek_sequence($match);
 	my $covs = $self->_seek_coverages($match);
